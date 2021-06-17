@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=windows-1251" http-equiv="content-type">
+    <title>Buttons</title>
+  </head>
+  <body>
+    <table style="width: 180px; height: 100px; vertical-align: top;" border="0">
+      <tbody>
+        <tr>
+          <td style="padding: 0cm 5.4pt; vertical-align: top; text-align: left; width: 182px;">
+           <br> <input name="Measure" type="button" onclick="parent.document.getElementById('Viewer').contentWindow.addMeasure()">Source Points
+           <!-- <br> <input name="Original mesh" type="button" onclick="parent.document.getElementById('Viewer').contentWindow.originalMeshbyEV()">Target in PCS; -->
+           <!-- <br> <input name="Rotate by Eigen Value" type="button" onclick="parent.document.getElementById('Viewer').contentWindow.rotateModelbyEV()">PCA Fit; -->
+           <br> <input name="Rotate by Matrix" type="button" onclick="parent.document.getElementById('Viewer').contentWindow.rotateaboutXbyMatrix4()">Rotate about X;
+           <br> <input name="Rotate by Matrix" type="button" onclick="parent.document.getElementById('Viewer').contentWindow.rotateaboutYbyMatrix4()">Rotate about Y;
+           <br> <input name="Rotate by Matrix" type="button" onclick="parent.document.getElementById('Viewer').contentWindow.rotateaboutZbyMatrix4()">Rotate about Z;
+           <br> <input name="Fit by SGM" type="button" onclick="parent.document.getElementById('Viewer').contentWindow.Test()">Test;
+           <br> <input name="Fit by SGM" type="button" onclick="parent.document.getElementById('Viewer').contentWindow.getUserRange()">Get User Range; 
+           <!-- <br> <input name="Show/Hide" type="button" onclick="parent.document.getElementById('Viewer').contentWindow.showHidePoints()">Show/hide theory; -->
+           <br> <input name="Lines" type="button" onclick="parent.document.getElementById('Viewer').contentWindow.drawLines()">Lines;
+             <form> <input id="from" style="width:60pt; border: groove" type="text"> from surface </form>
+             <form> <input id="to" style="width:60pt; border: groove" type="text"> to surface </form>
+           <form> <input id="dateOutput0" style="width:60pt; border: groove" type="text"> Vertices </form>
+           <form> <input id="dateOutput1" style="width:60pt; border: groove" type="text"> Triangles </form>
+           <form> <input id="dateOutput3" style="width:60pt; border: groove" type="text"> Dist EV </form>
+           <form> <input id="dateOutput4" style="width:60pt; border: groove" type="text"> Dist Fit </form>
+           <form> <input id="dateOutput5" style="width:60pt; border: groove" type="text"> Iterations </form>
+           <form> <input id="dateOutput6" style="width:60pt; border: groove" type="text"> Toller, % </form>
+           <form> <input id="dateOutput7" style="width:60pt; border: groove" type="text"> Time, sec </form>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>

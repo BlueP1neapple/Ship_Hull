@@ -1,0 +1,8 @@
+fname="Car.xyz";
+m=GetCount(fname);
+n=1;
+:
+str=GetStr(fname,n);
+met:
+point i1,i2,i3 color3;
+if n<617 {n=n+1;goto met;} 

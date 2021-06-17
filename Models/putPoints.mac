@@ -1,0 +1,21 @@
+// Объекты
+defarr xm[3];
+//___________________Выделение точек
+
+fname="E:\\Со старого ноутбука\\Антенна\\Антенна\\Fit_14_09_17\\Models\\mirror.txt";
+m=GetCount(fname);
+	i=0;
+	iobj=0;
+lab_1:
+	i=i+1;
+If (i<=m) {
+str=GetStr(fname,i);
+rr=SplitByDelim(str," ",xm);
+color 5;
+point xm[1],xm[2],xm[3]+100;
+goto lab_1;
+}
+
+
+exit;
+

@@ -1,0 +1,28 @@
+// Объекты
+defarr xm[1];
+defarr x[3];
+//___________________Выделение точек
+
+fname="E:\\Со старого ноутбука\\Антенна\\Антенна\\Fit_14_09_17\\Models\\dataset_matr.txt";
+m=GetCount(fname);
+:
+	i=0;
+	iobj=0;
+lab_1:
+If (i<=m) {
+	j=0;
+lab_2:
+	j=j+1;
+	If (j<=3) {
+		str1=GetStr(fname,i+j);
+		rr=SplitByDelim(str1,"   ",xm);
+		x[j]=xm[1];
+		goto lab_2;
+	}
+color 0;
+	point x[1],x[2],x[3];
+	i=i+3;
+	goto lab_1;
+}
+exit;
+

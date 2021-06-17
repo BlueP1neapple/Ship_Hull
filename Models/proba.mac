@@ -1,0 +1,16 @@
+defarr ar[4];
+m=GetCount("Car.xyz");
+:
+n=1;
+:
+met:
+str=GetStr("Car.xyz",n);
+tri=Trim(str);
+k=SplitByDelim(tri," ",ar);
+color 3;
+point ar[1],ar[2],ar[3];
+//color 13;
+//point ar[1],ar[2],ar[4]; 
+if n<=m {n=n+1; goto met;} 
+exit;
+

@@ -1,0 +1,203 @@
+<!--Surface Fitter Programme-->
+<!DOCTYPE html>
+	
+	
+<html lang="en">
+	<head>
+		<title>ShipHull</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			body {
+				color: #61443e;
+				font-family:Monospace;
+				font-size:13px;
+				text-align:center;
+
+				background-color: #bfd1e5;
+				margin: 0px;
+				overflow: hidden;
+			}
+
+			#info {
+				position: absolute;
+				top: 0px; width: 100%;
+				padding: 5px;
+			}
+
+			a {
+
+				color: #a06851;
+			}
+
+		</style>
+	</head>
+	<body>
+
+		<div id="container"><br /><br /><br /><br /><br />Generating world...</div>
+		<script src="build/three.js"></script>
+		<script src="build/AnaglyphEffect.js"></script>
+		<script src="build/delaunay.js"> </script>
+		<!-- <script src="build/STLExporter.js"></script> -->
+		<!-- <script src="js/FileSaver.js"></script> -->
+		<script src="js/ModelConstructor.js"></script>
+		<script src="js/ProtoUtyls.js"></script>
+		<script src="js/numeric-1.2.6.js"></script>
+		<script src="js/OrbitControls.js"></script>
+		<script src="build/TrackballControls.js"></script>
+		<script src="js/Detector.js"></script>
+		<script src="js/stats.min.js"></script>
+		<script src="js/verb.js"></script>
+		<script src="js/verbToThreeConversion.js"></script>
+		<script src="js/threeBasic.js"></script>
+
+		<script>
+
+			if ( ! Detector.webgl ) {
+
+				Detector.addGetWebGLMessage();
+				document.getElementById( 'container' ).innerHTML = "";
+
+			}
+
+			var container, stats;
+
+			var camera, controls, scene, renderer;
+
+			var texture, lines, farvertex, lenta;
+			var ModelGroup = new THREE.Object3D();
+
+			var worldWidth = 256, worldDepth = 256,
+			worldHalfWidth = worldWidth / 2, worldHalfDepth = worldDepth / 2;
+
+			var clock = new THREE.Clock();
+			var pointSize = 0.035;
+			var pointcloud, pointcloud1, pointcloud2, pointcloud3, cloudclone;
+			var shouldSphereFollowMouse = true;
+			var co = new THREE.Vector3( 0, 0, 0 );
+			var helper, effect, eigen_key = false, showhide = false, showmes = false;
+			var mesh, mesh1, matri; 
+			var pts = new Array(), curve = new Array();
+	
+			var points3d = new Array(), cloud3d = new Array(),  vert = new Array(), data = new Array(),
+				verticesCount, vertices = new Array(), mirror = new Array(), springs = new Array(),
+				xmax = ymax = zmax = - 100000000, xmin = ymin = zmin = 100000000, scale, linestoread;
+			var original_to_load = "models/mirror_1.txt"; 
+			var measures_to_load = "models/Ponts of Bn.xyz";
+
+			init();
+			animate();
+
+			function init() {
+//----------------------------------------------------------------------------------
+//----------------------------------------------------------------------------------
+//	alert (" one++++");
+//----------------------------------------------------------------------------------
+                     var xmlhttp1 = getXmlHttp();
+				xmlhttp1.open('GET', measures_to_load, false);
+				xmlhttp1.send(null);
+				parseMEASURES (xmlhttp1.responseText, false);
+//----------------------------------------------------------------------------------
+//	alert (" two++++");
+
+				container = document.getElementById( 'container' );
+				camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.01, 10);
+				camera.position.set( 6, 4, 2 );
+				camera.up.set( 0, 0, 1 );
+				scene = new THREE.Scene();
+				controls = new THREE.TrackballControls ( camera );
+				controls.rotateSpeed = 16;
+				controls.dynamicDampingFactor = 0.78;
+
+//--------------------------------------------------------------------------------------------------------------------
+			var dist = xmax;
+			var light = new THREE.PointLight( 0xffffff);
+			light.position.set( 0, dist/6.4, -0.2*dist );
+			scene.add( light );
+			var light1 = new THREE.PointLight( 0xffffff);
+			light1.position.set( 0, dist/6.4, 0.2*dist );
+			scene.add( light1 );
+//======================Measures in the form of point cloud ==========================================================
+				pointcloud3 = drawPointCloud(data, new THREE.Color( 1,0,0 ), 1);
+				matri = getEigenValueMatrix(cloud3d);
+//----------------------Axes helper----------------------------------------------------------------------------------------------
+				var axisHelper = new THREE.AxisHelper( 1 );
+				ModelGroup.add( axisHelper );
+//--------------------------------------------------------------------------------------------------------------------
+				//var distan = Math.sqrt(getDistanceFromMesh(mesh, cloud3d)) * scale;
+				//alert (" distan = " + distan);
+				scene.add(ModelGroup);
+//--------------------------------------------------------------------------------------------------------------------
+				renderer = new THREE.WebGLRenderer();
+				//renderer.setClearColor( 0xeeeeee);//0xbfd1e5 );
+				renderer.setClearColor( 0xffffff);//0xbfd1e5 );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				effect = new THREE.AnaglyphEffect( renderer, window.innerWidth, window.innerHeight, 30 );
+				container.innerHTML = "";
+				container.appendChild( renderer.domElement );
+				container.addEventListener( 'mousemove', onMouseMove, false );
+				stats = new Stats();
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.top = '0px';
+				container.appendChild( stats.domElement );
+				window.addEventListener( 'resize', onWindowResize, false );
+			}
+
+			function onWindowResize() {
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				controls.handleResize();
+			}
+
+
+
+			//
+			function animate() {
+				requestAnimationFrame( animate );
+				render();
+				stats.update();
+			}
+
+			function render() {
+				controls.update( clock.getDelta() );
+				renderer.render( scene, camera );
+				//effect.render( scene, camera );
+			}
+
+			function onMouseMove( event ) {
+
+				//if ( shouldSphereFollowMouse ) {
+				//
+				//	var mouseX = ( event.clientX / window.innerWidth ) * 2 - 1;
+				//	var mouseY = -( event.clientY / window.innerHeight ) * 2 + 1;
+				//
+				//	var vector = new THREE.Vector3( mouseX, mouseY, camera.near );
+				//
+				//	// Convert the [-1, 1] screen coordinate into a world coordinate on the near plane
+				//	var projector = new THREE.Projector();
+				//	projector.unprojectVector( vector, camera );
+				//
+				//	var raycaster = new THREE.Raycaster( camera.position, vector.sub( camera.position ).normalize() );
+				//
+				//	// See if the ray from the camera into the world hits one of our meshes
+				//	var intersects = raycaster.intersectObject( mesh );
+				//	lastIntersects = intersects;
+				//
+				//	// Toggle rotation bool for meshes that we clicked
+				//	if ( intersects.length > 0 ) {
+				//
+				//		helper.position.set( 0, 0, 0 );
+				//		helper.lookAt( intersects[ 0 ].face.normal );
+				//
+				//		helper.position.copy( intersects[ 0 ].point );
+				//
+				//	}
+				//}
+			}
+//=============================================================================
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+		</script>
+
+	</body>
+</html>
